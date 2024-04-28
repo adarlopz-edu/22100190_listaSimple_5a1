@@ -19,8 +19,8 @@ public:
     Persona* datos;
     Nodo* siguiente;
 
-    Nodo() : datos(nullptr), siguiente(nullptr) {}
-    Nodo(Persona* datos) : datos(datos), siguiente(nullptr) {}
+    Nodo() : datos(NULL), siguiente(NULL) {}
+    Nodo(Persona* datos) : datos(datos), siguiente(NULL) {}
 };
 
 class Lista {
@@ -30,14 +30,16 @@ private:
     Nodo* iterador;
 
 public:
-    Lista() : inicio(nullptr), contador(0), iterador(nullptr) {}
+    Lista() : inicio(NULL), contador(0), iterador(NULL) {}
 
     void agregar(Persona* datos);
-    void mostrar();
-    bool buscar(string criterio, string valor);
+    bool buscar(string criterio, string valor, string& resultado);
     bool eliminar(int registro);
     bool modificar(int registro, Persona* nuevosDatos);
     int contar();
+    void mostrar();
+
+
     void iterador_mostrar();
     void iterador_first();
     void iterador_last();
@@ -46,14 +48,14 @@ public:
     void iterador_getItem();
 };
 
-void Lista::agregar(Persona* datos) {
+void Lista::agregar(Persona *datos) {
     Nodo* nuevo = new Nodo(datos);
-    if (inicio == nullptr) {
+    if (inicio == NULL) {
         inicio = nuevo;
     }
     else {
         Nodo* temp = inicio;
-        while (temp->siguiente != nullptr) {
+        while (temp->siguiente != NULL) {
             temp = temp->siguiente;
         }
         temp->siguiente = nuevo;
@@ -61,49 +63,30 @@ void Lista::agregar(Persona* datos) {
     contador++;
 }
 
-void Lista::mostrar() {
+bool Lista::buscar(string criterio, string valor, string& resultado) {
     Nodo* temp = inicio;
-    while (temp != nullptr) {
-        cout << "Nombre: " << temp->datos->nombre << endl;
-        cout << "Apellido: " << temp->datos->apellido << endl;
-        cout << "Registro: " << temp->datos->registro << endl;
-        cout << "Edad: " << temp->datos->edad << endl << endl;
-        temp = temp->siguiente;
-    }
-}
-
-bool Lista::buscar(string criterio, string valor) {
-    Nodo* temp = inicio;
-    while (temp != nullptr) {
+    while (temp != NULL) {
         if (criterio == "nombre" && temp->datos->nombre == valor) {
-            cout << "Nodo encontrado:" << endl;
-            cout << "Nombre: " << temp->datos->nombre << endl;
-            cout << "Apellido: " << temp->datos->apellido << endl;
-            cout << "Registro: " << temp->datos->registro << endl;
-            cout << "Edad: " << temp->datos->edad << endl << endl;
+            resultado = "Nodo encontrado:\nNombre: " + temp->datos->nombre + "\nApellido: " + temp->datos->apellido + "\nRegistro: " + to_string(temp->datos->registro) + "\nEdad: " + to_string(temp->datos->edad) + "\n";
             return true;
         }
         else if (criterio == "registro" && temp->datos->registro == stoi(valor)) {
-            cout << "Nodo encontrado:" << endl;
-            cout << "Nombre: " << temp->datos->nombre << endl;
-            cout << "Apellido: " << temp->datos->apellido << endl;
-            cout << "Registro: " << temp->datos->registro << endl;
-            cout << "Edad: " << temp->datos->edad << endl << endl;
+            resultado = "Nodo encontrado:\nNombre: " + temp->datos->nombre + "\nApellido: " + temp->datos->apellido + "\nRegistro: " + to_string(temp->datos->registro) + "\nEdad: " + to_string(temp->datos->edad) + "\n";
             return true;
         }
         temp = temp->siguiente;
     }
-    cout << "Nodo no encontrado." << endl << endl;
+    resultado = "Nodo no encontrado.\n";
     return false;
 }
 
 bool Lista::eliminar(int registro) {
     Nodo* actual = inicio;
-    Nodo* anterior = nullptr;
+    Nodo* anterior = NULL;
 
-    while (actual != nullptr) {
+    while (actual != NULL) {
         if (actual->datos->registro == registro) {
-            if (anterior == nullptr) {
+            if (anterior == NULL) {
                 inicio = actual->siguiente;
             }
             else {
@@ -122,7 +105,7 @@ bool Lista::eliminar(int registro) {
 
 bool Lista::modificar(int registro, Persona* nuevosDatos) {
     Nodo* temp = inicio;
-    while (temp != nullptr) {
+    while (temp != NULL) {
         if (temp->datos->registro == registro) {
             temp->datos->nombre = nuevosDatos->nombre;
             temp->datos->apellido = nuevosDatos->apellido;
@@ -138,16 +121,33 @@ int Lista::contar() {
     return contador;
 }
 
+void Lista::mostrar() {
+    Nodo* temp = inicio;
+    while (temp != NULL) {
+        cout << temp->datos->nombre;
+        cout << "Nombre: " << temp->datos->nombre << endl;
+        cout << "Apellido: " << temp->datos->apellido << endl;
+        cout << "Registro: " << temp->datos->registro << endl;
+        cout << "Edad: " << temp->datos->edad << endl;
+        cout << "Direccion del nodo: " << temp << endl;
+        if (temp == iterador) {
+            cout << "(Nodo actual)" << endl;
+        }
+        cout << "Direccion del siguiente nodo: " << temp->siguiente << endl << endl;
+        temp = temp->siguiente;
+    }
+}
+
 void Lista::iterador_mostrar() {
-    if (iterador != nullptr) {
-        cout << "Iterador actual:" << endl;
+    if (iterador != NULL) {
+        cout << "Valor del nodo actual:\n";
         cout << "Nombre: " << iterador->datos->nombre << endl;
         cout << "Apellido: " << iterador->datos->apellido << endl;
         cout << "Registro: " << iterador->datos->registro << endl;
         cout << "Edad: " << iterador->datos->edad << endl << endl;
     }
     else {
-        cout << "El iterador no apunta a ningún nodo." << endl << endl;
+        cout << "El iterador no apunta a ningun nodo." << endl << endl;
     }
 }
 
@@ -157,64 +157,57 @@ void Lista::iterador_first() {
 
 void Lista::iterador_last() {
     Nodo* temp = inicio;
-    while (temp->siguiente != nullptr) {
+    while (temp->siguiente != NULL) {
         temp = temp->siguiente;
     }
     iterador = temp;
 }
 
 void Lista::iterador_next() {
-    if (iterador != nullptr && iterador->siguiente != nullptr) {
+    if (iterador != NULL && iterador->siguiente != NULL) {
         iterador = iterador->siguiente;
-    }
-    else {
-        cout << "No hay siguiente nodo." << endl << endl;
     }
 }
 
 void Lista::iterador_prev() {
-    if (iterador != nullptr && iterador != inicio) {
+    if (iterador != NULL && iterador != inicio) {
         Nodo* temp = inicio;
         while (temp->siguiente != iterador) {
             temp = temp->siguiente;
         }
         iterador = temp;
     }
-    else {
-        cout << "No hay nodo anterior." << endl << endl;
-    }
 }
 
 void Lista::iterador_getItem() {
-    if (iterador != nullptr) {
-        cout << "Dirección de memoria del nodo actual: " << iterador << endl << endl;
-    }
-    else {
-        cout << "El iterador no apunta a ningún nodo." << endl << endl;
+    if (iterador != NULL) {
+        // No imprime desde la clase, solo devuelve el puntero
     }
 }
 
 int main() {
-    Lista lista;
 
+    Lista lista;
     char opcion;
 
-    do {
-        // Menú de opciones
-        cout << "Seleccione una opción:" << endl;
+    lista.agregar(new Persona("juan", "lopez", 22100190, 21));
+    lista.agregar(new Persona("pedro", "lopez", 22100191, 21));
+    lista.agregar(new Persona("valentino", "lopez", 22100192, 21));
+
+
+    while (true) {
+        cout << "Lista simple brad" << endl;
         cout << "a. Agregar nodo" << endl;
         cout << "b. Buscar" << endl;
-        cout << "c. Eliminación" << endl;
-        cout << "d. Modificación" << endl;
+        cout << "c. Eliminacion" << endl;
+        cout << "d. Modificacion" << endl;
         cout << "e. Contar" << endl;
         cout << "f. Mostrar" << endl;
         cout << "g. Iterador" << endl;
-        cout << "0. Salir" << endl;
-        cout << "Ingrese su opción: ";
+        cout << "Ingrese su opcion: ";
         cin >> opcion;
 
-        switch (opcion) {
-        case 'a': {
+        if (opcion == 'a'){
             string nombre, apellido;
             int registro, edad;
             cout << "Ingrese el nombre: ";
@@ -225,22 +218,24 @@ int main() {
             cin >> registro;
             cout << "Ingrese la edad: ";
             cin >> edad;
-            lista.agregar(new Persona(nombre, apellido, registro, edad));
-            cout << "Nodo agregado exitosamente." << endl << endl;
-            break;
         }
-        case 'b': {
+        if (opcion == 'b') {
             string criterio, valor;
-            cout << "Seleccione el criterio de búsqueda (nombre o registro): ";
+            string resultado;
+            cout << "Seleccione el criterio de busqueda (nombre o registro): ";
             cin >> criterio;
             cout << "Ingrese el valor a buscar: ";
             cin >> valor;
-            lista.buscar(criterio, valor);
-            break;
+            if (lista.buscar(criterio, valor, resultado)) {
+                cout << resultado;
+            }
+            else {
+                cout << "Nodo no encontrado." << endl << endl;
+            }
         }
-        case 'c': {
+        if (opcion == 'c') {
             int registro;
-            cout << "Ingrese el número de registro del nodo a eliminar: ";
+            cout << "Ingrese el numero de registro del nodo a eliminar: ";
             cin >> registro;
             if (lista.eliminar(registro)) {
                 cout << "Nodo eliminado exitosamente." << endl << endl;
@@ -248,13 +243,12 @@ int main() {
             else {
                 cout << "Nodo no encontrado." << endl << endl;
             }
-            break;
         }
-        case 'd': {
+        if (opcion == 'd') {
             int registro;
             string nombre, apellido;
             int edad;
-            cout << "Ingrese el número de registro del nodo a modificar: ";
+            cout << "Ingrese el numero de registro del nodo a modificar: ";
             cin >> registro;
             cout << "Ingrese el nuevo nombre: ";
             cin >> nombre;
@@ -268,80 +262,66 @@ int main() {
             else {
                 cout << "Nodo no encontrado." << endl << endl;
             }
-            break;
         }
-        case 'e': {
+        if (opcion == 'e') {
             cout << "Cantidad de nodos en la lista: " << lista.contar() << endl << endl;
             break;
         }
-        case 'f': {
-            cout << "Lista completa:" << endl;
+        if (opcion == 'f') {
             lista.mostrar();
-            break;
         }
-        case 'g': {
+
+        if (opcion == 'g') {
             char opcionIterador;
             do {
-                cout << "Seleccione una opción del iterador:" << endl;
+                cout << "Seleccione una opcion del iterador:" << endl;
                 cout << "a. Mostrar" << endl;
                 cout << "b. First" << endl;
                 cout << "c. Last" << endl;
                 cout << "d. Next" << endl;
                 cout << "e. Prev" << endl;
                 cout << "f. getItem" << endl;
-                cout << "0. Volver al menú principal" << endl;
-                cout << "Ingrese su opción: ";
+                cout << "0. Volver al menu principal" << endl;
+                cout << "Ingrese su opcion: ";
                 cin >> opcionIterador;
 
                 switch (opcionIterador) {
-                case 'a': {
+                case 'a':
                     lista.iterador_mostrar();
                     break;
-                }
-                case 'b': {
+
+                case 'b':
                     lista.iterador_first();
                     cout << "Iterador movido al primer nodo." << endl << endl;
                     break;
-                }
-                case 'c': {
+
+                case 'c':
                     lista.iterador_last();
-                    cout << "Iterador movido al último nodo." << endl << endl;
+                    cout << "Iterador movido al ultimo nodo." << endl << endl;
                     break;
-                }
-                case 'd': {
+
+                case 'd':
                     lista.iterador_next();
                     break;
-                }
-                case 'e': {
+
+                case 'e':
                     lista.iterador_prev();
                     break;
-                }
-                case 'f': {
+
+                case 'f':
                     lista.iterador_getItem();
                     break;
-                }
-                case '0': {
-                    cout << "Volviendo al menú principal." << endl;
+
+                case '0':
+                    cout << "Volviendo al menu principal." << endl;
                     break;
-                }
-                default: {
-                    cout << "Opción no válida. Por favor, seleccione una opción válida." << endl;
+
+                default:
+                    cout << "Opcion no valida. Por favor, seleccione una opcion valida." << endl;
                     break;
-                }
                 }
             } while (opcionIterador != '0');
             break;
         }
-        case '0': {
-            cout << "Saliendo del programa." << endl;
-            break;
-        }
-        default: {
-            cout << "Opción no válida. Por favor, seleccione una opción válida." << endl;
-            break;
-        }
-        }
-    } while (opcion != '0');
-
-    return 0;
+    }
 }
